@@ -1,5 +1,6 @@
 package com.educandoweb.course.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -22,6 +23,7 @@ public class User  implements Serializable {
     private String phone;
     private String password;
 
+    @JsonIgnore // This annotation prevents Jackson that serializes the json from looping all user-related requests
     @OneToMany(mappedBy = "client")
     private final List<Order> orders = new ArrayList<>();
 
