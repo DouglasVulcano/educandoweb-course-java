@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_categories")
@@ -17,12 +21,20 @@ public class Category implements Serializable {
     private Long id;
     private String name;
 
-    public Category(){
+    public Category() {
     }
 
     public Category(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    @JsonIgnore 
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> products = new HashSet<>();
+
+    public Set<Product> getProducts() {
+        return products;
     }
 
     public Long getId() {
@@ -43,8 +55,10 @@ public class Category implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Category category = (Category) o;
         return Objects.equals(id, category.id);
     }

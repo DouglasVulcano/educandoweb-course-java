@@ -2,10 +2,12 @@ package com.educandoweb.course.config;
 
 import com.educandoweb.course.entities.Category;
 import com.educandoweb.course.entities.Order;
+import com.educandoweb.course.entities.Product;
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.enums.OrderStatus;
 import com.educandoweb.course.repositories.CategoryRepository;
 import com.educandoweb.course.repositories.OrderRepository;
+import com.educandoweb.course.repositories.ProductRepository;
 import com.educandoweb.course.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -16,7 +18,8 @@ import java.time.Instant;
 import java.util.Arrays;
 
 @Configuration // Indicates that this is a Spring configuration class.
-@Profile("test") // Specifies that this configuration will only be active when the 'test' profile is active.
+@Profile("test") // Specifies that this configuration will only be active when the 'test' profile
+                 // is active.
 public class TestConfig implements CommandLineRunner {
 
     @Autowired // Automatically injects an instance of UserRepository.
@@ -25,6 +28,8 @@ public class TestConfig implements CommandLineRunner {
     private OrderRepository orderRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     // The run method is executed when the application is initialized.
     @Override
@@ -33,7 +38,18 @@ public class TestConfig implements CommandLineRunner {
         Category cat2 = new Category(null, "Books");
         Category cat3 = new Category(null, "Computers");
 
+        Product p1 = new Product(null, "PC Gamer", "Description", 100.0, "");
+        Product p2 = new Product(null, "Cronicas de Gelo e Fogo", "Livro de fantasia", 50.0, "");
+        Product p3 = new Product(null, "Headphone", "Bluetooth", 300.0, "");
+
         categoryRepository.saveAll(Arrays.asList(cat1, cat2, cat3));
+        productRepository.saveAll(Arrays.asList(p1, p2, p3));
+
+        p1.getCategories().add(cat3);
+        p2.getCategories().add(cat2);
+        p3.getCategories().add(cat1);
+
+        productRepository.saveAll(Arrays.asList(p1, p2, p3));
 
         // Create two User objects with fictitious data.
         User u1 = new User(null, "Maria Brown", "maria@gmail.com", "988888888", "123456");
@@ -41,10 +57,10 @@ public class TestConfig implements CommandLineRunner {
 
         Order o1 = new Order(null, u1, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.DELIVERED);
         Order o2 = new Order(null, u2, Instant.parse("2019-07-21T03:42:10Z"), OrderStatus.WAITING_PAYMENT);
-        Order o3 = new Order(null, u1, Instant.parse("2019-07-22T15:21:22Z"), OrderStatus.PAID);
 
         // Save the User objects to the database.
         userRepository.saveAll(Arrays.asList(u1, u2));
-        orderRepository.saveAll(Arrays.asList(o1, o2, o3));
+        orderRepository.saveAll(Arrays.asList(o1, o2));
+
     }
 }
