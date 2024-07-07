@@ -2,10 +2,12 @@ package com.educandoweb.course.config;
 
 import com.educandoweb.course.entities.Category;
 import com.educandoweb.course.entities.Order;
+import com.educandoweb.course.entities.OrderItem;
 import com.educandoweb.course.entities.Product;
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.enums.OrderStatus;
 import com.educandoweb.course.repositories.CategoryRepository;
+import com.educandoweb.course.repositories.OrderItemRepository;
 import com.educandoweb.course.repositories.OrderRepository;
 import com.educandoweb.course.repositories.ProductRepository;
 import com.educandoweb.course.repositories.UserRepository;
@@ -24,12 +26,18 @@ public class TestConfig implements CommandLineRunner {
 
     @Autowired // Automatically injects an instance of UserRepository.
     private UserRepository userRepository;
+
     @Autowired
     private OrderRepository orderRepository;
+
     @Autowired
     private CategoryRepository categoryRepository;
+
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     // The run method is executed when the application is initialized.
     @Override
@@ -57,9 +65,17 @@ public class TestConfig implements CommandLineRunner {
 
         Order o1 = new Order(null, u1, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.DELIVERED);
         Order o2 = new Order(null, u2, Instant.parse("2019-07-21T03:42:10Z"), OrderStatus.WAITING_PAYMENT);
+        Order o3 = new Order(null, u2, Instant.parse("2019-07-21T03:42:10Z"), OrderStatus.WAITING_PAYMENT);
 
         // Save the User objects to the database.
         userRepository.saveAll(Arrays.asList(u1, u2));
-        orderRepository.saveAll(Arrays.asList(o1, o2));
+        orderRepository.saveAll(Arrays.asList(o1, o2, o3));
+
+        OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
+        OrderItem oi2 = new OrderItem(o2, p2, 4, p1.getPrice());
+        OrderItem oi3 = new OrderItem(o3, p3, 2, p1.getPrice());
+
+        orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3));
+
     }
 }
